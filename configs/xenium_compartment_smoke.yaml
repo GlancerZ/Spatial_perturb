@@ -1,0 +1,79 @@
+experiment:
+  name: xenium_compartment_smoke
+  seed: 42
+  output_dir: outputs/xenium_compartment_smoke
+data:
+  h5ad_path: data/example_compartments.h5ad
+  cache_dir: cache/xenium_compartment_smoke_k7
+  lr_db_path: ""
+  use_lr_prior: false
+  split_seed: 42
+  train_fraction: 0.8
+  split_strategy: spatial_blocks
+  split_blocks_x: 4
+  split_blocks_y: 4
+  restrict_subgraph_to_split: true
+  center_selection_strategy: low_overlap
+  max_center_overlap_ratio: 0.2
+  max_cell_reuse: 3
+  resample_views_each_epoch: true
+  batch_size: 1
+  num_workers: 0
+  view_prep_workers: 0
+  max_cells: 0
+  chunk_size: 1024
+  top_genes: 512
+  nuclear_tokens: 256
+  cytoplasmic_tokens: 256
+  gene_sampling_strategy: compartment_balanced
+  num_bins: 32
+  knn_k: 7
+  sampling_strategy: one_hop
+  subgraph_size: 8
+  nearest_k: 7
+  lr_k: 0
+  candidate_k: 7
+  lr_temperature: 0.5
+model:
+  hidden_dim: 256
+  num_layers: 6
+  gene_heads: 16
+  cell_heads: 16
+  dropout: 0.1
+  ffn_mult: 4
+  use_genept: false
+  genept_path: data/gene_embeddings.pt
+  cell_attention_mode: cytoplasm_cross
+masking:
+  general_mask_ratio: 0.6
+  center_mask_ratio: 0.6
+  receptor_keep_ratio: 0.0
+  uniform_mask_ratio: 0.6
+loss:
+  mask_reduction: per_cell
+  mask_scope: all_cells
+optimizer:
+  name: adamw
+  lr: 0.0001
+  eps: 0.00000001
+  weight_decay: 0.01
+  betas: [0.9, 0.999]
+training:
+  epochs: 1
+  device: cuda
+  amp: true
+  amp_dtype: bfloat16
+  grad_clip_norm: 1.0
+  grad_accum_steps: 2
+  lr_schedule: cosine
+  warmup_updates: 0
+  warmup_ratio: 0.25
+  min_lr_ratio: 0.1
+  parallelism: ddp
+  gradient_checkpointing: true
+  log_every: 2
+  val_every: 2
+  max_train_steps: 8
+  max_val_batches: 2
+wandb:
+  enabled: false
