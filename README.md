@@ -40,4 +40,12 @@ PYTHONPATH=src python -m unittest discover -s tests -p 'test_spatial_bias.py'
 PYTHONPATH=src python -m unittest discover -s tests -p 'test_compartment*.py'
 ```
 
-The new spatial/binned-expression changes have passed Python syntax checks. Tensor tests and GPU validation have not yet been executed for these changes. This upload contains source code, tests, portable configuration and entry points; no datasets, trained weights, experiment results or cluster launch settings are included.
+The new spatial/binned-expression changes have passed Python syntax checks. Tensor tests and GPU validation have not yet been executed for these changes. This upload contains source code, tests, portable configuration and entry points; no datasets, trained weights, cluster launch settings are included. Experiment notes are provided separately below.
+
+## Experiment notes
+
+- [Shared expression binning and relative spatial encoding (Chinese)](docs/cytoplasm_spatial_binning_v2.zh.md)
+- [Masked-mean model run history (Chinese; historical snapshot)](docs/cytoplasm_mean_live_run.zh.md)
+- [Completed Muon checkpoint validation (Chinese)](docs/cytoplasm_mean_muon_checkpoint_validation.zh.md)
+
+The checkpoint report evaluates the earlier model on a fixed validation subset. It is not a result for the new spatial-encoding model or a full independent test benchmark. Historical run notes include environment-specific paths and job records for reproducibility; these are not portable setup instructions.
