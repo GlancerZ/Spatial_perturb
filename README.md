@@ -1,3 +1,5 @@
+> **Current model: V12 (2026-10-16)** — [code and overview](v12/README.md), [installation and usage](v12/docs/INSTALL.zh.md), [all recorded data download sources](v12/docs/DATA.zh.md), [model details](v12/docs/MODEL.zh.md). The earlier model below is retained for reference.
+
 # Spatial Perturb
 
 Spatial transcriptomics pretraining with nuclear and cytoplasmic gene tokens, masked expression reconstruction, and cytoplasmic cell-to-cell attention.

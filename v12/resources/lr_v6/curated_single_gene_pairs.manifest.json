@@ -1,0 +1,23 @@
+{
+  "excluded_complexes": true,
+  "excluded_rows": {
+    "complex_or_noncanonical_single_gene": 928
+  },
+  "lr_bias": "weighted visible cytoplasmic activity sum / (known evidence weight + 4)",
+  "lr_coverage": "known evidence weight / full prior weight; diagnostic only",
+  "missing_panel_genes": "unknown, not measured zero",
+  "prediction_only_interactions_added": false,
+  "retained_annotation_rows": {
+    "Cell-Cell Contact": 279,
+    "ECM-Receptor": 156,
+    "Secreted Signaling": 576
+  },
+  "semantics": "curated_single_gene_subset",
+  "sha256": "5bd34271a8366c416cb18bbd440c8d1230c331c93396a21dadccbb423878ce8b",
+  "source_revision": "f02e7776e8a99c9abdc5fe5572a1a20369faf159",
+  "source_rows": 1939,
+  "source_sha256": "791002fdbc810676306c3e89b883895da01620651c015931423d627d525d1b43",
+  "source_url": "https://github.com/TerminatorJ/Spatialformer/blob/f02e7776e8a99c9abdc5fe5572a1a20369faf159/downstream/cell_cell_communication/data/ligand_receptor_database.csv",
+  "unique_directed_pairs": 1010,
+  "weight": "uniform_one_per_unique_directed_pair; evidence duplicates do not increase weight"
+}
