@@ -9,7 +9,7 @@ permissions:
   contents: read
 jobs:
   v12:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     defaults:
       run:
@@ -36,6 +36,23 @@ jobs:
           OMP_NUM_THREADS: '2'
           OPENBLAS_NUM_THREADS: '2'
         run: |
-          python -m unittest discover -s tests -p 'test_subcellular_v12*.py' -v
-          python -m unittest discover -s tests -p 'test_visium*mix*.py' -v
-          python -m unittest discover -s tests -p 'test_portable_provenance.py' -v
+          run_suite() {
+            local pattern=$1 code line
+            if python -m unittest discover -s tests -p "$pattern" -v > unit-tests.log 2>&1; then
+              cat unit-tests.log
+            else
+              code=$?
+              cat unit-tests.log
+              # Expose bounded failure details through public check annotations.
+              # GitHub's raw log API otherwise requires separate API credentials.
+              while IFS= read -r line; do
+                line=${line//'%'/'%25'}
+                line=${line//$'\r'/'%0D'}
+                printf '::error title=V12 test diagnostic::%s\n' "$line"
+              done < <(tail -100 unit-tests.log)
+              exit "$code"
+            fi
+          }
+          run_suite 'test_subcellular_v12*.py'
+          run_suite 'test_visium*mix*.py'
+          run_suite 'test_portable_provenance.py'
