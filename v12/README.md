@@ -53,11 +53,11 @@ samples, additional collected sources and benchmarks. Historical links are
 documented as such; some providers require registration or manual file selection.
 Raw datasets, caches and large model weights are obtained separately.
 
-Verification for this publication: source-content comparisons, manifest structure,
-shell syntax and static review. New environment installation, CPU/GPU tests,
-checkpoint relocation and end-to-end execution have not been rerun in this
-publishing session. CI is configured to test the portable package after push;
-its status must be checked before treating it as passed.
+Verification for this publication: fresh CPU dependency installation, Python and
+shell syntax, and **72 unit tests passed on GitHub Actions**. The 330-file source
+snapshot was also checked against Git-tracked files and content hashes.
+Real-checkpoint relocation, GPU execution and complete data-to-training runs
+remain unverified in the new environment. See the [validation record](docs/VALIDATION.zh.md).
 
 Earlier helper modules are retained where current code or checkpoint source
 manifests depend on them. Optional historical research scripts can require

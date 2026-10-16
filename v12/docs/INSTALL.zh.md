@@ -135,7 +135,7 @@ Slurm计算节点也可使用此入口而不加`--standalone-compute`。
 只对可信来源checkpoint执行加载（原实现使用PyTorch checkpoint反序列化）。
 
 推理写出H5AD读出、provenance与图；须检查真实输出和日志才能判断成功。
-本次发布仅做静态审核，不包含新环境的安装、GPU smoke、cache/训练/推理实跑；
+本次已完成 GitHub CPU 环境安装、语法与 72 项单元测试，见 [发布验证记录](VALIDATION.zh.md)；尚未执行真实数据下载、GPU smoke、cache/训练/推理实跑。
 历史V12成功证据与HDmix待验证状态见[模型说明](MODEL.zh.md)。
 
 ## GitHub目录与独立GPU主机
