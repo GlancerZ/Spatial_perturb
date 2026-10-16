@@ -1,0 +1,109 @@
+experiment: subcellular_v12_visium_mixed_20261011
+base_config: configs/xenium48_compartment_sources.yaml
+assets_dir: /scratch/glancerz/spatial-pretrain-v3-subcellular-scgpt-20260916/resources/scgpt_official
+cache_root: /scratch/glancerz/spatial-pretrain-v3-subcellular-scgpt-20260916/cache/subcellular_scgpt
+output_dir: /scratch/glancerz/spatial-pretrain-v3-subcellular-scgpt-20260916/outputs/subcellular_v12_visium_mixed_20261011
+binning:
+  num_bins: 51
+  tie_policy: left
+data:
+  context_cells: 64
+  context_tokens_per_compartment: 256
+  query_genes: 128
+  paired_mask_ratio: 0.5
+  neighbors: 16
+  seed: 42
+  train_fraction: 0.95
+  split_blocks_x: 8
+  split_blocks_y: 8
+  center_stride: 32
+v12:
+  neighbors: 8
+  max_tokens: 512
+  query_genes: 64
+  gene_mask_ratio: 0.15
+  neighbor_dropout: 0.2
+  max_neighbor_distance: 100.0
+  pilot_centers: 0
+model:
+  backbone_kind: scgpt
+  backbone_trainable_layers: 2
+  neighbors: 8
+  checkpointing: true
+  encoder_chunk_size: 16
+  spatial_heads: 8
+  coordinate_scale: 50.0
+  spatial_radius: 100.0
+  graph_neighbors: 8
+  max_neighbor_distance: 100.0
+  lr_enabled: true
+  lr_max_strength: 2.0
+  lr_initial_strength: 0.1
+  dropout: 0.0
+lr:
+  enabled: true
+  path: /scratch/glancerz/spatial-pretrain-v3-subcellular-scgpt-20260916/resources/lr_v6/curated_single_gene_pairs.csv
+  sha256: 5bd34271a8366c416cb18bbd440c8d1230c331c93396a21dadccbb423878ce8b
+  source: https://github.com/TerminatorJ/Spatialformer/blob/f02e7776e8a99c9abdc5fe5572a1a20369faf159/downstream/cell_cell_communication/data/ligand_receptor_database.csv
+training:
+  additional_updates: 500
+  visium_centers_per_update: 16
+  optimizer: muon
+  lr_muon: 0.0001
+  lr_new: 0.0001
+  lr_backbone: 0.000005
+  backbone_trainable_layers: 2
+  muon_adjust_lr_fn: match_rms_adamw
+  muon_momentum: 0.95
+  muon_nesterov: true
+  muon_ns_steps: 5
+  weight_decay: 0.01
+  epochs: 1
+  global_batch_size: 64
+  micro_batch_size: 4
+  num_workers: 2
+  torch_threads: 4
+  checkpoint_every: 100
+  resume_every: 25
+  log_every: 10
+  warmup_ratio: 0.01
+  min_lr_ratio: 0.1
+  grad_clip_norm: 1.0
+  save_margin_seconds: 240
+loss:
+  type: joint_compartment_count_nll
+  modes: [nucleus, cytoplasm, local, spatial, fused]
+evaluation:
+  cells_per_donor: 400
+  batch_size: 8
+  fixed_C_cell_type: 0.1
+  fixed_C_region: 0.01
+  neighbor_radius: 100.0
+protocol:
+  dataset: original_uncorrected_48_slice_cache
+  epoch_scope: matched_500_update_budget_not_a_corpus_epoch
+  backbone: ordinary_scgpt_last_2_layers_trainable
+  target: paired_raw_counts_NB_total_beta_binomial_nuclear_allocation
+  alignment: joint_count_task_no_teacher_no_forced_latent_alignment
+  readouts: [nucleus, cytoplasm, local, spatial, fused, concat, concat_pca512]
+  tasks: [cell_type, region, neighbor_composition, masked_joint_count_prediction]
+  validation: fixed_5200_train_val_donor_cohort_no_test
+visium_cache_root: /project/aip-junding/glancerz/spatial_pretrain_v3/visium_mix_20261011/cache
+continuation:
+  checkpoint: /scratch/glancerz/spatial-pretrain-v3-subcellular-scgpt-20260916/outputs/subcellular_v12_compartment_20260930/checkpoints/step_010234.pt
+  source_step: 10234
+  sha256: d423aa7278d34c60138b55804c94f73b98a918a88c8a933f99e09919a1fe6cb1
+mixed_pretraining_protocol:
+  control: same_source_weights_and_optimizer_schedule_Xenium_only
+  intervention: replace_16_of_64_global_centers_with_balanced_Visium_HD_samples
+  samples: [kidney, prostate, brain, heart, breast_fixed_frozen]
+  species: Homo sapiens
+  exclude_physical_sample: H1-VM2JXXK/A1
+  exclude_sample_aliases: [Visium_HD_Human_Colon_Cancer, Visium_HD_Human_Colorectal_Cancer_FFPE]
+  nuclear_cytoplasmic_assignment: official_Space_Ranger_image_segmented_2um_bins
+  checkpoint_every_added_updates: 100
+  evaluation: frozen_original_CRC_cells_labels_blocks_C_grid_and_baselines
+  primary_region_readout: fused
+  primary_region_metrics: [macro_f1, ari_k_known]
+  secondary_readouts: [nucleus, cytoplasm, local, spatial, concat, scgpt_total_cls]
+  old_pretraining_patient_identity: unknown

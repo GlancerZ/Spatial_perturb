@@ -1,0 +1,17 @@
+{
+  "backbone_kind": "scgpt",
+  "model_name": "whole-human",
+  "repository": "https://github.com/bowang-lab/scGPT",
+  "code_commit": "cebd6fae655b9c585a4807daa3ac31bb764f06b4",
+  "official_model_zoo": "https://github.com/bowang-lab/scGPT#pretrained-scgpt-model-zoo",
+  "download_folder": "https://drive.google.com/drive/folders/1oWh_-ZRdhtoGQ2Fw24HP41FgLoomVo-y",
+  "download_file_ids": {
+    "args.json": "1hh2zGKyWAx3DyovD30GStZ3QlzmSqdk1",
+    "best_model.pt": "14AebJfGOUF047Eg40hk57HCtrb0fyDTm",
+    "vocab.json": "1H3E_MJ-Dl36AQV6jLbna2EdvgPaqvqcC"
+  },
+  "weights_sha256": "6cb5d451ab5c4b33eb673adbe4fddc61d2389df1b89b7651a9fe2e557572b922",
+  "vocab_sha256": "acca93d114ca62c3f0f50debbd23e8c87f0714f4737764454f6b2b13f2e8580f",
+  "download_date_utc": "2026-09-16",
+  "initialization_policy": "Official ordinary-scGPT encoder only; all compartment, spatial, readout and decoder modules newly initialized. Never initialize from a prior scGPT-spatial run."
+}

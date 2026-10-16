@@ -1,0 +1,58 @@
+name: V12 source and unit checks
+on:
+  push:
+    paths: ['v12/**', '.github/workflows/v12-checks.yml']
+  pull_request:
+    paths: ['v12/**', '.github/workflows/v12-checks.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  v12:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: v12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: v12/requirements.txt
+      - name: Install CPU validation dependencies
+        run: |
+          python -m pip install 'torch==2.9.0' --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r requirements.txt
+          python -m pip install --no-deps -e .
+      - name: Check Python and shell syntax
+        run: |
+          python -m compileall -q src scripts examples tests
+          bash -n scripts/setup_scgpt_assets.sh scripts/download_data.sh
+      - name: Check model, data, loss and evaluation contracts
+        env:
+          PYTHONPATH: src:scripts
+          OMP_NUM_THREADS: '2'
+          OPENBLAS_NUM_THREADS: '2'
+        run: |
+          run_suite() {
+            local pattern=$1 code diagnostic
+            if python -m unittest discover -s tests -p "$pattern" -v > unit-tests.log 2>&1; then
+              cat unit-tests.log
+            else
+              code=$?
+              cat unit-tests.log
+              # Expose bounded failure details through public check annotations.
+              # GitHub's raw log API otherwise requires separate API credentials.
+              diagnostic=$(tail -80 unit-tests.log)
+              diagnostic=${diagnostic//'%'/'%25'}
+              diagnostic=${diagnostic//$'\r'/'%0D'}
+              diagnostic=${diagnostic//$'\n'/'%0A'}
+              printf '::error title=V12 test diagnostic::%s\n' "$diagnostic"
+              exit "$code"
+            fi
+          }
+          run_suite 'test_subcellular_v12*.py'
+          run_suite 'test_visium*mix*.py'
+          run_suite 'test_portable_provenance.py'
