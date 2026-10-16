@@ -37,7 +37,7 @@ jobs:
           OPENBLAS_NUM_THREADS: '2'
         run: |
           run_suite() {
-            local pattern=$1 code line
+            local pattern=$1 code diagnostic
             if python -m unittest discover -s tests -p "$pattern" -v > unit-tests.log 2>&1; then
               cat unit-tests.log
             else
@@ -45,11 +45,11 @@ jobs:
               cat unit-tests.log
               # Expose bounded failure details through public check annotations.
               # GitHub's raw log API otherwise requires separate API credentials.
-              while IFS= read -r line; do
-                line=${line//'%'/'%25'}
-                line=${line//$'\r'/'%0D'}
-                printf '::error title=V12 test diagnostic::%s\n' "$line"
-              done < <(tail -100 unit-tests.log)
+              diagnostic=$(tail -80 unit-tests.log)
+              diagnostic=${diagnostic//'%'/'%25'}
+              diagnostic=${diagnostic//$'\r'/'%0D'}
+              diagnostic=${diagnostic//$'\n'/'%0A'}
+              printf '::error title=V12 test diagnostic::%s\n' "$diagnostic"
               exit "$code"
             fi
           }
